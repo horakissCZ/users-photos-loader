@@ -1,10 +1,14 @@
 package com.fb.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ReactionDto {
 	
+	@JsonIgnore
 	private String  id;
 	private String  type;
 	private Integer numOfReactions;
+	@JsonIgnore
 	private PhotoDto photo;
 	
 	public ReactionDto() {

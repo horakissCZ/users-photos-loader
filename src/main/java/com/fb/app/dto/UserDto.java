@@ -2,17 +2,27 @@ package com.fb.app.dto;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 public class UserDto {
+	
     private String userFbId;
 	
+    @JsonProperty(access = Access.WRITE_ONLY)
 	private String accessToken;
 	
+    @JsonProperty(access = Access.READ_ONLY)
 	private String name;
 	
+    @JsonProperty(access = Access.READ_ONLY)
 	private String gender;
 	
+    @JsonProperty(access = Access.READ_ONLY)
 	private String profilePictureUrl;
 	
+	@JsonIgnore
 	private Set<PhotoDto> photos;
 	
 	public UserDto() {
