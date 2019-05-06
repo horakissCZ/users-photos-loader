@@ -5,6 +5,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.fb.app.service.fb.modelmapper.PhotoFbToDtoMap;
+import com.fb.app.service.fb.modelmapper.UserFbToDtoMap;
+
 @SpringBootApplication
 public class UsersPhotosLoaderApplication {
 
@@ -14,7 +17,11 @@ public class UsersPhotosLoaderApplication {
 	
 	@Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+		
+		ModelMapper mp = new ModelMapper();
+		mp.addMappings(new PhotoFbToDtoMap());
+		mp.addMappings(new UserFbToDtoMap());
+		
+        return mp;
     }
-
 }
