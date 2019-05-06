@@ -11,4 +11,7 @@ public interface PhotoRepository extends JpaRepository<Photo, Integer> {
 	
 	@Query("SELECT p FROM Photo p JOIN p.users u WHERE u.userFbId = :userFbId")
 	List<Photo> findByUserFbId(String userFbId);
+	
+	@Query("SELECT p FROM Photo p LEFT JOIN p.users u WHERE u.userFbId is null")
+	List<Photo> findPhotosWithoutUser();
 }
