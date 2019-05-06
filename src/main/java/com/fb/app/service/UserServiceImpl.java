@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fb.app.domain.Photo;
 import com.fb.app.domain.User;
 import com.fb.app.dto.PhotoDto;
 import com.fb.app.dto.UserDto;
@@ -32,7 +33,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserDto getUserDetail(String userFbId) {
-		return modelMapper.map(userRepository.findByUserFbId(userFbId), UserDto.class);
+		User foundedUser = userRepository.findByUserFbId(userFbId);
+		
+		return foundedUser != null ? 
+				modelMapper.map(foundedUser, UserDto.class) : null;
 	}
 
 	@Override
@@ -50,12 +54,18 @@ public class UserServiceImpl implements UserService {
 		UserDataLoader dataLoader = new FbDataLoader();
 		
 		UserDto newUser = dataLoader.getUserBasicInfo(fbClient, userDto.getUserFbId(), modelMapper);
-		Set<PhotoDto> userTaggedPhotos = 
-				dataLoader.getUserTaggedPhotosWithReactions(fbClient, userDto.getUserFbId(), modelMapper);
 		
-		newUser.setPhotos(userTaggedPhotos);
+		if(newUser != null) {
+			Set<PhotoDto> userTaggedPhotos = 
+					dataLoader.getUserTaggedPhotosWithReactions(fbClient, userDto.getUserFbId(), modelMapper);
+			newUser.setPhotos(userTaggedPhotos);
+			userRepository.save(modelMapper.map(newUser, User.class));
+			
+			List<Photo> photosWithoutUser = photoRepository.findPhotosWithoutUser();
+			System.out.println("Je to: " + photosWithoutUser.size());
+			photoRepository.deleteAll(photosWithoutUser);
+		}
 		
-		userRepository.save(modelMapper.map(newUser, User.class));
 	}
 
 	@Override
