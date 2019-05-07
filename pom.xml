@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>users-photos-loader</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>release-1.0</version>
 	<name>users-photos-loader</name>
 	<description>Simple app providing REST API for loading API and showing users' photos</description>
 

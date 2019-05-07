@@ -1,5 +1,6 @@
 package com.fb.app.service.fb;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.fb.app.service.fb.types.PhotoWithReactionsType;
 import com.restfb.Connection;
@@ -29,10 +30,19 @@ public class FbGraphAPI {
     }
     
     public List<PhotoWithReactionsType> fetchUserTaggedPhotos(String endpoint, Parameter... parameters) {
+    	
+    	List<PhotoWithReactionsType> resultPhotos = new ArrayList<>();
     	Connection<PhotoWithReactionsType> fetchedUserPhotos = 
     			fbClient.fetchConnection(endpoint, PhotoWithReactionsType.class, parameters);
+    	resultPhotos.addAll(fetchedUserPhotos.getData());
     	
-    	return fetchedUserPhotos.getData();
+    	while(fetchedUserPhotos.hasNext()) {
+    		fetchedUserPhotos = 
+    				fbClient.fetchConnectionPage(fetchedUserPhotos.getNextPageUrl(), PhotoWithReactionsType.class);
+    		resultPhotos.addAll(fetchedUserPhotos.getData());
+    	}
+
+    	return resultPhotos;
     }
   
 }
