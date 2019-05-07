@@ -1,8 +1,8 @@
 package com.fb.app.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +32,18 @@ public class UserServiceImpl implements UserService {
 	private ModelMapper modelMapper;
 	
 	@Override
-	public UserDto getUserDetail(String userFbId) {
-		User foundedUser = userRepository.findByUserFbId(userFbId);
-		
-		return foundedUser != null ? 
-				modelMapper.map(foundedUser, UserDto.class) : null;
-	}
-
-	@Override
-	public List<PhotoDto> getUserPhotos(String userFbId) {
-		return photoRepository.findByUserFbId(userFbId).stream()
-				.map(photo -> modelMapper.map(photo, PhotoDto.class))
-				.collect(Collectors.toList());
+	public Optional<UserDto> getUserDetail(String userFbId) {
+		return userRepository.findByUserFbId(userFbId)
+				.map(user -> modelMapper.map(user, UserDto.class));
 	}
 
 	@Override
 	public void createUser(UserDto userDto) {
+		
 		FbGraphAPI fbClient = 
 				FbGraphAPI.createFbDataLoader(userDto.getAccessToken(), Version.VERSION_3_2);
 	
 		UserDataLoader dataLoader = new FbDataLoader();
-		
 		UserDto newUser = dataLoader.getUserBasicInfo(fbClient, userDto.getUserFbId(), modelMapper);
 		
 		if(newUser != null) {
@@ -62,18 +53,20 @@ public class UserServiceImpl implements UserService {
 			userRepository.save(modelMapper.map(newUser, User.class));
 			
 			List<Photo> photosWithoutUser = photoRepository.findPhotosWithoutUser();
-			System.out.println("Je to: " + photosWithoutUser.size());
 			photoRepository.deleteAll(photosWithoutUser);
 		}
 		
 	}
 
 	@Override
-	public void removeUser(String userFbId) {
-		User foundedUser = userRepository.findByUserFbId(userFbId);
+	public Optional<UserDto> removeUser(String userFbId) {
 		
-		if(foundedUser != null)
-			userRepository.delete(foundedUser);
+		return userRepository.findByUserFbId(userFbId)
+				.map(user -> {
+					userRepository.delete(user);
+					return Optional.of(modelMapper.map(user, UserDto.class));
+					})
+				.orElse(Optional.empty());
 	}
 
 }

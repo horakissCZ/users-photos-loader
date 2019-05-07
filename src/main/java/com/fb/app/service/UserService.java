@@ -1,18 +1,16 @@
 package com.fb.app.service;
 
-import java.util.List;
+import java.util.Optional;
 
-import com.fb.app.dto.PhotoDto;
 import com.fb.app.dto.UserDto;
+import com.fb.app.exception.UserNotFoundException;
 
 public interface UserService {
 	
-	UserDto getUserDetail(String userFbId);
-	
-	List<PhotoDto> getUserPhotos(String userFbId);
+	Optional<UserDto> getUserDetail(String userFbId);
 
 	void createUser(UserDto accessToken);
 
-	void removeUser(String userFbId);
+	Optional<UserDto> removeUser(String userFbId) throws UserNotFoundException;
 	
 }
