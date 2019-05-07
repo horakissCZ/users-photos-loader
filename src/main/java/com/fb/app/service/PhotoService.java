@@ -1,10 +1,12 @@
 package com.fb.app.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.fb.app.dto.PhotoDto;
 
 public interface PhotoService {
 
-	List<PhotoDto> getAllUserTaggedPhotos(String userFbId);
+	Page<PhotoDto> getAllUserTaggedPhotos(String userFbId, Pageable pageRequest);
+	
 }
