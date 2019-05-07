@@ -2,14 +2,18 @@ package com.fb.app.dto;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 public class UserDto {
 	
+	@NotBlank(message = "The parameter userFbId can't be null or empty.")
     private String userFbId;
 	
+    @NotBlank(message = "The parameter accessToken can't be null or empty.")
     @JsonProperty(access = Access.WRITE_ONLY)
 	private String accessToken;
 	
